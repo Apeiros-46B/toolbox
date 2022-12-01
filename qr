@@ -13,6 +13,6 @@ shift
 
 case "$opt" in
     e) qrencode "$@"                                                                                   ;;
-    d) flameshot gui -r -s | zbarimg /dev/stdin 2> /dev/stdout | grep -F 'QR-Code:' | cut -d ':' -f 2- ;;
+    d) flameshot gui -r -s | zbarimg /dev/stdin 2>&1 | grep -F 'QR-Code:' | cut -d ':' -f 2- ;;
     *) usage                                                                                           ;;
 esac

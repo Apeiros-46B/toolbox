@@ -14,7 +14,7 @@ f6b="${b}$(tput setaf 6)"
 # {{{ usage
 usage() {
     cat <<EOF
-${f6b}usage:${sgr0} ${0##*/} [FILE] [SWITCHES/OPTIONS]
+${f6b}usage:${sgr0} ${0##*/} <file> <switches/options>
 
 ${f6b}switches:${sgr0}
 
