@@ -16,9 +16,9 @@ edit an encrypted (`gpg` symmetric aes256) file with `$EDITOR`
 - `$EDITOR` environment variable set in your shell
 
 ### usage examples
-- `ee unencrypted_file.norg` - just starts `$EDITOR` on the file
-- `ee nonexistent_file.norg` - starts `$EDITOR` on a temp file and encrypts it after editor exit
-- `ee encrypted_file.norg` - decrypts, opens with `$EDITOR`, and re-encrypts after editor exit
+- `ee file.norg` (unencrypted) - starts `$EDITOR` on `file.norg`
+- `ee file.norg` (nonexistent) - starts `$EDITOR` on a temp file and encrypts it to `file.norg` after editor exit
+- `ee file.norg` (encrypted) - decrypts to a temp file, opens temp file with `$EDITOR`, and re-encrypts to `file.norg` after editor exit
 
 ## fp
 **f**ile **p**icker  
@@ -94,8 +94,8 @@ toggle executable status of a file, using `sudo` if necessary
 - `chmod`
 
 ### usage examples
-- `tx test.sh` - toggle executable of the file `test.sh`
-- `tx not_writable_file.sh` - toggle executable of the file `not_writable_file.sh`, with `sudo`
+- `tx file.sh` - make the file `file.sh` executable if it is not, and make it non-executable if it is
+- `tx file.sh` (not writable by current user) - toggle executable of the (not writable) file `file.sh`, with `sudo`
 
 ## xc
 **xc**lip  
@@ -116,5 +116,5 @@ simplify downloading videos from youtube using `yt-dlp`
 - `yt-dlp`
 
 ### usage examples
-- `yt a mp3 <a youtube link>` - downloads the specified youtube video as mp3 audio with best-available quality
-- `yt v mov <a youtube link>` - downloads the specified youtube video as mov video with best-available quality
+- `yt a mp3 <a youtube link>` - downloads youtube video as mp3 audio with best-available quality
+- `yt v mov <a youtube link>` - downloads youtube video as mov video with best-available quality
