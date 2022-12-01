@@ -4,6 +4,7 @@ should be all posix-compliant
 
 ## scripts
 - `ee` - **e**dit **e**ncrypted
+- `fp` - **f**ile **p**icker
 - `ne` - **n**eorg **e**xport
 - `qr` - **qr** code
 - `sm` - **s**ed **m**ap
