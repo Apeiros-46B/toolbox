@@ -1,0 +1,18 @@
+#!/bin/sh
+# qr - qr codes
+# qr code decoding and encoding
+
+usage() {
+    echo 'usage: <e|d> <qrencode args>'; exit 1
+}
+
+[ $# -eq 0 ] && usage
+
+opt="$1"
+shift
+
+case "$opt" in
+    e) qrencode "$@"                                                                                   ;;
+    d) flameshot gui -r -s | zbarimg /dev/stdin 2> /dev/stdout | grep -F 'QR-Code:' | cut -d ':' -f 2- ;;
+    *) usage                                                                                           ;;
+esac

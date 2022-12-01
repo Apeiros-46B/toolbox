@@ -1,0 +1,20 @@
+#!/bin/sh
+# tx - toggle executable
+# toggle executable status of a file with required permissions
+
+usage() {
+    echo 'usage: tx <file>'; exit 1
+}
+
+[ $# -eq 0  ] && usage
+[ ! -e "$1" ] && usage
+
+# do we need to use sudo?
+sudo=""
+[ -w "$1" ] || sudo="sudo"
+
+# set executable on or off?
+switch="+x"
+[ -x "$1" ] && switch="-x"
+
+$sudo chmod $switch "$@"
