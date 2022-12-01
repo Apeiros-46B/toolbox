@@ -1,6 +1,6 @@
 #!/bin/sh
 # fp - file picker
-# pick files with fzf and run a command on them
+# pick files with fzf and open dragon-drop with them
 
 usage() {
     echo 'usage: fp [location] [pattern to exclude] [previewer program]'
