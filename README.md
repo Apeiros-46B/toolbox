@@ -1,5 +1,6 @@
 # scripts
-collection of shell scripts
+collection of shell scripts  
+should be all posix-compliant
 
 ## scripts
 - `ee` - **e**dit **e**ncrypted
