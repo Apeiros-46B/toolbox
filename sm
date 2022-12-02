@@ -7,12 +7,12 @@
 expr="$1"; shift
 cmd="$1"; shift
 
-for file in $@; do
-    newfile="$(echo $file | sed "$expr")"
+for file in "$@"; do
+    newfile="$(echo $file | sed -e "$expr")"
 
-    if [ "$file" != "$newfile" ]; then
-        "$cmd" "$file" "$newfile"                                        && \
-            echo "$cmd $file $newfile"                                   || \
+    if [ ! "$file" = "$newfile" ]; then
+        "$cmd" "$file" "$newfile"      && \
+            echo "$cmd $file $newfile" || \
             echo "$cmd $file $newfile $(tput setaf 1)failed$(tput sgr0)"
     fi
 done
