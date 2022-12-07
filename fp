@@ -7,9 +7,9 @@ usage() {
 }
 
 bgr() { # background runner function
-    set +m                        # silence job control messages
-    nohup "$@" > /dev/null 2>&1 & # silence output and make immune to hangups
-    set -m                        # re-enable job control messages
+    set +m                      # silence job control messages
+    nohup "$@" > /dev/null 2>&1 # silence output and make immune to hangups
+    set -m                      # re-enable job control messages
 }
 
 # get location
@@ -44,4 +44,4 @@ find "$location" -type f -printf '%T@ %p\n' 2> /dev/null            \
     | grep -Ev -e "$exclude_pattern"                                \
     | fzf -m --bind "ctrl-o:execute-silent($preview '$location'{})" \
     | awk '{ print "'"$location"'" $0 }'                            \
-    | bgr dragon-drop -x -a -T -I -s 64
+    | bgr dragon-drop -a -T -I -s 64
