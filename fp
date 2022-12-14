@@ -7,11 +7,10 @@ usage() {
 }
 
 bgr() { # background runner function
-    set +m                      # silence job control messages
-    nohup "$@" > /dev/null 2>&1 # silence output and make immune to hangups
-    set -m                      # re-enable job control messages
+    nohup "$@" > /dev/null 2>&1 & # make immune to hangups, silence output, and run in background
 }
 
+# {{{ arg parsing (TODO: make it take real opts and flags)
 # get location
 location="./"
 [ "$1" ] && location="$(realpath "$1")/" && shift
@@ -26,22 +25,29 @@ exclude_pattern="^$"
 # get previewer program
 preview="preview"
 [ "$1" ] && preview="$(realpath "$1")" && shift
+# }}}
 
-# main pipeline
-#     find: list files and print unix time before them
-#     sort: sort list in reverse order (recently modified first)
-#     sed:  remove unix time and location from each line
-#     grep: remove excluded patterns from list
-#     fzf:  fuzzy find provided files
-#               -m:     allow multi-select
-#               --bind: bind Ctrl+O to preview program
-#     awk:  re-add location to each selected file from fzf
-#     bgr:  open target program with selected files
+# {{{ main
+# find files in provided location
+printf "finding files\r"
+raw_files="$(find "$location" -type f -printf '%T@ %p\n' 2> /dev/null)"
 
-find "$location" -type f -printf '%T@ %p\n' 2> /dev/null            \
-    | sort -r                                                       \
-    | sed "s/^[0-9]*\\.[0-9]* $escaped//"                           \
-    | grep -Ev -e "$exclude_pattern"                                \
-    | fzf -m --bind "ctrl-o:execute-silent($preview '$location'{})" \
-    | awk '{ print "'"$location"'" $0 }'                            \
-    | bgr dragon-drop -a -T -I -s 64
+# sort by time modified
+sorted_files="$(echo "$raw_files" | sort -r)"
+
+# remove time modified and shorten path
+pretty_files="$(echo "$sorted_files" | sed "s/^[0-9]*\\.[0-9]* $escaped//")"
+
+# exclude files based on the provided exclude pattern
+files_excluded="$(echo "$pretty_files" | grep -Ev -e "$exclude_pattern")"
+
+# open fzf
+fzf_results="$(echo "$files_excluded" | fzf -m --bind "ctrl-o:execute-silent($preview '$location'{})")"
+
+# add back long path to prevent weird things from happening
+full_results="$(echo "$fzf_results" | awk '{ print "'"$location"'" $0 }')"
+
+# run dragon
+# shellcheck disable=SC2086 # word splitting is intentional here
+bgr dragon-drop -T -s 64 $full_results
+# }}}
