@@ -51,15 +51,15 @@ if you wish to change the default switches/options, edit lines 66 to 74 as well 
 by ${f6b}apeiros${sgr0}
 EOF
 
-    exit $1
+    exit 1
 }
 
-[ $1 ] && [ $1 = '-h' -o $1 = '--help' ] && usage 0
+[ "$1" ] && [ "$1" = '-h' ] || [ "$1" = '--help' ] && usage 0
 # }}}
 
 # {{{ get input file
-[ ! $1    ] && echo -e "${f1}no file provided\n"             && usage 1 # no file
-[ ! -f $1 ] && echo -e "${f1}provided file does not exist\n" && usage 1 # nonexistent file
+[ ! "$1"    ] && printf '%sno file provided\n'             "$f1" && usage 1 # no file
+[ ! -f "$1" ] && printf '%sprovided file does not exist\n' "$f1" && usage 1 # nonexistent file
 
 origfile=$1                                        # original file
 file="$(realpath "$origfile" | sed 's/\.norg$//')" # path without ext
@@ -72,11 +72,11 @@ debug=false  # debug mode?
 formal=false # formal mode?
 
 # opts
-names=""                                  # last names (applicable only for formal mode)
-linkcolor="linkblue"                      # link color
+names=''                                  # last names (applicable only for formal mode)
+linkcolor='linkblue'                      # link color
 preamble="$HOME/org/.util/preamble.tex"   # path to a LaTeX preamble
 filter="$HOME/org/.util/pagebreak.lua"    # path to a pandoc Lua filter
-to="pdf"                                  # output format
+to='pdf'                                  # output format
 
 # loop through remaining args
 while [ $# -gt 0 ]; do
@@ -103,10 +103,10 @@ done
 $formal && preamble="$HOME/org/.util/mla_preamble.tex"
 # }}}
 
-# {{{ check if converting to pdf
+# {{{ convert to latex first if target is pdf
 pdf=false
-[ "$to" = "pdf" ] && {
-    to="latex"
+[ "$to" = 'pdf' ] && {
+    to='latex'
     pdf=true
 }
 # }}}
@@ -114,7 +114,7 @@ pdf=false
 
 # {{{ norg -> markdown
 # hopefully one day there will be a better way to do this
-# or there will be a way to use norg with pandoc directly
+# or there will be a way to use norg with pandoc directly (i think this is planned)
 echo "converting ${f6b}norg${sgr0} to ${f6b}markdown$(tput sgr0)..."
 
 # run exporter in nvim
@@ -122,27 +122,27 @@ nvim --headless +"Neorg export to-file $file.md" "$file.norg" > /tmp/neorg_expor
 
 # get the pid
 pid=$!
-$debug && echo "pid: $pid"
 $debug && {
+    echo "pid: $pid"
     tail -F /tmp/neorg_export_out &
     tail=$!
 }
 
 # kill nvim if exited
-trap "kill -KILL $pid" EXIT && $debug && echo "trap set"
+trap 'kill -KILL $pid' EXIT && $debug && echo 'trap set'
 
 # continuously attempt to kill nvim while it's still running
-while ps cax | grep -Fq "$pid"; do
+while pgrep -x nvim | grep -Fq "$pid"; do
     # if file exists and successful export message was caught,                         kill nvim process
-    [ -f "$file.md" ] && grep -Fqm1 "Successfully exported" "/tmp/neorg_export_out" && kill -KILL $pid && \
-        $debug && kill -KILL $tail && echo -e "\nexporter killed"
+    [ -f "$file.md" ] && grep -Fqm1 'Successfully exported' /tmp/neorg_export_out && kill -KILL $pid && \
+        $debug && kill -KILL "$tail" && printf '\nexporter killed\n'
 done
 
 # disable trap
-trap - EXIT && $debug && echo "trap removed"
+trap - EXIT && $debug && echo 'trap removed'
 
 # if desired type is markdown, exit now
-[ "$to" = "md" -o "$to" = "markdown" ] && exit 0
+[ "$to" = 'md' ] || [ "$to" = 'markdown' ] && exit 0
 # }}}
 
 # {{{ markdown -> new type
@@ -173,7 +173,8 @@ else
     fi
 fi
 
-[ $? -eq 0 ] && $debug && echo "successfully converted"
+# shellcheck disable=SC2181
+[ $? -eq 0 ] && $debug && echo 'successfully converted'
 # }}}
 
 # {{{ latex tweaks + conversion step 2 (pdf only)
@@ -185,7 +186,7 @@ $pdf && {
     sed -i 's/\\item\[\$\\boxtimes\$\]/\\item\[\\rlap{\\raisebox{0\.3ex}{\\hspace{0\.4ex}\\tiny \\ding{52} } }\$\\square\$\]/g' "$file.latex"
 
     # hack for colored links
-    sed -i 's/\\hypersetup{/&colorlinks=true,linkcolor=linkblue,urlcolor=linkblue,/' "$file.latex"
+    sed -i 's/\\hypersetup{/&colorlinks=true,linkcolor='"$linkcolor"',urlcolor='"$linkcolor"',/' "$file.latex"
     sed -i '0,/^  hidelinks,$/{/^  hidelinks,$/d;}' "$file.latex"
 
     # if formal, 12 pt
@@ -197,7 +198,13 @@ $pdf && {
 
     # {{{ lualatex
     # don't suppress output if debug -- suppress output if not debug mode
-    $debug && lualatex "$file.latex" || lualatex "$file.latex" > /dev/null
+    if $debug; then
+        lualatex "$file.latex"
+    else
+        lualatex "$file.latex" > /dev/null
+    fi
+
+    # shellcheck disable=SC2181
     [ $? -eq 0 ] && $debug && echo "successfully converted"
     # }}}
 }
@@ -208,12 +215,14 @@ $pdf && {
 # remove markdown file if not in debug mode
 ! $debug && {
     echo "removing ${f6b}markdown${sgr0} file..."
-    rm "$file.md" 2> /dev/null
+    rm -f "$file.md" 2> /dev/null
+
+    $pdf && {
+        # remove latex files if not in debug mode
+        echo "removing ${f6b}latex${sgr0} files and logs..."
+        rm -f "$file.latex" "$file.aux" "$file.log" "texput.log" 2> /dev/null
+    }
 }
 
-# remove latex files if not in debug mode
-! $debug && $pdf && {
-    echo "removing ${f6b}latex${sgr0} files and logs..."
-    rm "$file.latex" "$file.aux" "$file.log" "texput.log" 2> /dev/null
-} || true # exit cleanly
+exit 0 # exit cleanly
 # }}}

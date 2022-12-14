@@ -40,7 +40,7 @@ pick files with `fzf` (descending modification date) and open `dragon-drop` with
 
 ## ne
 **n**eorg **e**xport  
-export `.norg` files to various formats (most notably pdf) using `pandoc`
+export `.norg` files to other formats (most notably pdf) using `pandoc`
 
 ### requirements
 *see `ne -h` for more info*
@@ -94,8 +94,8 @@ toggle executable status of a file, using `sudo` if necessary
 - `chmod`
 
 ### usage examples
-- `tx file.sh` - make the file `file.sh` executable if it is not, and make it non-executable if it is
-- `tx file.sh` (not writable by current user) - toggle executable of the (not writable) file `file.sh`, with `sudo`
+- `tx file.sh` - toggle executable bit on the file `file.sh`
+- `tx file.sh` (not writable by current user) - toggle executable bit on the (not writable) file `file.sh`, with `sudo`
 
 ## xc
 **xc**lip  

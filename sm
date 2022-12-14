@@ -8,7 +8,7 @@ expr="$1"; shift
 cmd="$1"; shift
 
 for file in "$@"; do
-    newfile="$(echo $file | sed -e "$expr")"
+    newfile="$(echo "$file" | sed -e "$expr")"
 
     if [ ! "$file" = "$newfile" ]; then
         "$cmd" "$file" "$newfile"      && \

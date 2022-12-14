@@ -43,6 +43,8 @@ files_excluded="$(echo "$pretty_files" | grep -Ev -e "$exclude_pattern")"
 
 # open fzf
 fzf_results="$(echo "$files_excluded" | fzf -m --bind "ctrl-o:execute-silent($preview '$location'{})")"
+# exit early if cancelled
+[ ! "$fzf_results" ] && exit 0
 
 # add back long path to prevent weird things from happening
 full_results="$(echo "$fzf_results" | awk '{ print "'"$location"'" $0 }')"
