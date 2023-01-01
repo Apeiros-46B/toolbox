@@ -1,7 +1,7 @@
 # toolbox
 collection of small scripts and utilities that I use frequently
 
-# shell scripts (`sh/`)
+## shell scripts (`sh/`)
 should be all posix-compliant  
 coreutils used are not listed under requirements
 
@@ -119,3 +119,6 @@ simplify downloading videos from youtube using `yt-dlp`
 #### usage examples
 - `yt a mp3 <a youtube link>` - downloads youtube video as mp3 audio with best-available quality
 - `yt v mov <a youtube link>` - downloads youtube video as mov video with best-available quality
+
+## scripts for sioyek (`sioyek/`)
+
