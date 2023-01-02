@@ -120,5 +120,7 @@ simplify downloading videos from youtube using `yt-dlp`
 - `yt a mp3 <a youtube link>` - downloads youtube video as mp3 audio with best-available quality
 - `yt v mov <a youtube link>` - downloads youtube video as mov video with best-available quality
 
-## scripts for sioyek (`sioyek/`)
+### gitzsh
+git right prompt for zsh
 
+usage: put `precmd() { RPROMPT="$(gitzsh)"; }` in your `.zshrc`

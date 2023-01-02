@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# suppress error output
+git() { command git "$@" 2> /dev/null; }
+
+# get head
+head="$(git symbolic-ref --short --quiet HEAD || git rev-parse HEAD | head -c 7)"; [ ! "$head" ] && exit # exit if not git repo
+
+# check changes
+if git diff-index --quiet HEAD --; then
+    color=2; sym='' # no changes
+else
+    color=5; [ "$1" ] && sym="$1" || sym='' # changes
+fi
+
+# output
+echo "%K{0}%B $head %F{0}%K{$color}$sym %k%f%b"
