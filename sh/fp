@@ -25,6 +25,10 @@ exclude_pattern="^$"
 # get previewer program
 preview="preview"
 [ "$1" ] && preview="$(realpath "$1")" && shift
+
+# get sorter program
+sorter="sort"
+[ "$1" ] && sorter="$(which "$1")" && shift
 # }}}
 
 # {{{ main
@@ -33,7 +37,7 @@ printf "finding files\r"
 raw_files="$(find "$location" -type f -printf '%T@ %p\n' 2> /dev/null)"
 
 # sort by time modified
-sorted_files="$(echo "$raw_files" | sort -r)"
+sorted_files="$(echo "$raw_files" | "$sorter")"
 
 # remove time modified and shorten path
 pretty_files="$(echo "$sorted_files" | sed "s/^[0-9]*\\.[0-9]* $escaped//")"
@@ -42,7 +46,7 @@ pretty_files="$(echo "$sorted_files" | sed "s/^[0-9]*\\.[0-9]* $escaped//")"
 files_excluded="$(echo "$pretty_files" | grep -Ev -e "$exclude_pattern")"
 
 # open fzf
-fzf_results="$(echo "$files_excluded" | fzf -m --bind "ctrl-o:execute-silent($preview '$location'{})")"
+fzf_results="$(echo "$files_excluded" | fzf -m --tac --bind "ctrl-o:execute-silent($preview '$location'{})")"
 # exit early if cancelled
 [ ! "$fzf_results" ] && exit 0
 
