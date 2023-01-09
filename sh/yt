@@ -12,7 +12,7 @@ opt="$1"; shift
 
 case "$opt" in
     a)
-        yt-dlp -x -f 251 --audio-quality 0 "$@"
+        yt-dlp -x -f '251-dash/251/ba*' --audio-quality 0 "$@"
         ;;
 
     v)
