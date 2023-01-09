@@ -6,7 +6,7 @@ usage() {
     echo 'usage: yt <a|v <format>> <yt-dlp opts>'; exit 1
 }
 
-[ $# -lt 3 ] && usage
+[ $# -lt 2 ] && usage
 
 opt="$1"; shift
 
@@ -16,6 +16,7 @@ case "$opt" in
         ;;
 
     v)
+        [ $# -lt 2 ] && usage
         fmt="$1"; shift
         yt-dlp -f 'b' --remux-video "$fmt" "$@"
         ;;
