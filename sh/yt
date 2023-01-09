@@ -3,16 +3,22 @@
 # simplify downloading youtube videos with yt-dlp
 
 usage() {
-    echo 'usage: yt <a|v> <format> <yt-dlp opts>'; exit 1
+    echo 'usage: yt <a|v <format>> <yt-dlp opts>'; exit 1
 }
 
 [ $# -lt 3 ] && usage
 
 opt="$1"; shift
-fmt="$1"; shift
 
 case "$opt" in
-    a) yt-dlp -f 'ba' -x --audio-quality 0 --audio-format "$fmt" "$@" ;;
-    v) yt-dlp -f 'b' --remux-video "$fmt" "$@"                        ;;
-    *) usage                                                          ;;
+    a)
+        yt-dlp -x -f 'ba*' --audio-quality 0 "$@"
+        ;;
+
+    v)
+        fmt="$1"; shift
+        yt-dlp -f 'b' --remux-video "$fmt" "$@"
+        ;;
+
+    *) usage ;;
 esac
