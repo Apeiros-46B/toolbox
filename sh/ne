@@ -118,25 +118,14 @@ pdf=false
 echo "converting ${f6b}norg${sgr0} to ${f6b}markdown$(tput sgr0)..."
 
 # run exporter in nvim
-nvim --headless +"Neorg export to-file $file.md" "$file.norg" > /tmp/neorg_export_out 2>&1 &
-
-# get the pid
+nvim --headless -c 'autocmd User NeorgExportComplete quitall' -c "Neorg export to-file $file.md" "$file.norg" > /dev/null 2>&1 &
 pid=$!
-$debug && {
-    echo "pid: $pid"
-    tail -F /tmp/neorg_export_out &
-    tail=$!
-}
 
 # kill nvim if exited
 trap 'kill -KILL $pid' EXIT && $debug && echo 'trap set'
 
-# continuously attempt to kill nvim while it's still running
-while pgrep -x nvim | grep -Fq "$pid"; do
-    # if file exists and successful export message was caught,                         kill nvim process
-    [ -f "$file.md" ] && grep -Fqm1 'Successfully exported' /tmp/neorg_export_out && kill -KILL $pid && \
-        $debug && kill -KILL "$tail" && printf '\nexporter killed\n'
-done
+# wait
+wait "$pid"
 
 # disable trap
 trap - EXIT && $debug && echo 'trap removed'
