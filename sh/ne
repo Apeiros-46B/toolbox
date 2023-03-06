@@ -178,8 +178,8 @@ $pdf && {
     sed -i 's/\\hypersetup{/&colorlinks=true,linkcolor='"$linkcolor"',urlcolor='"$linkcolor"',/' "$file.latex"
     sed -i '0,/^  hidelinks,$/{/^  hidelinks,$/d;}' "$file.latex"
 
-    # if formal, 12 pt
-    $formal && sed -i 's/^\\documentclass\[$/&12pt/' "$file.latex"
+    # change font size to 12pt
+    sed -i 's/^\\documentclass\[$/&12pt/' "$file.latex"
 
     # if formal and has names opt
     $formal && [ "$names" ] && sed -i 's/^\\rhead{.*}$/\\rhead{'"$names"' \\thepage}/' "$file.latex"
