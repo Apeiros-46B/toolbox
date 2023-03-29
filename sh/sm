@@ -1,6 +1,6 @@
 #!/bin/sh
 # sm - sed map
-# run commands with original file(s) as first argument(s) and result(s) of a sed expression as second argument(s)
+# run commands with original file(s) as first argument and result(s) after using a sed expression as second argument
 
 [ $# -lt 3 ] && echo 'usage: sm <sed expression> <command> <input files>' && exit 1
 
@@ -8,7 +8,7 @@ expr="$1"; shift
 cmd="$1"; shift
 
 for file in "$@"; do
-    newfile="$(echo "$file" | sed -e "$expr")"
+    newfile="$(echo "$file" | sed -E -e "$expr")"
 
     if [ ! "$file" = "$newfile" ]; then
         "$cmd" "$file" "$newfile"      && \

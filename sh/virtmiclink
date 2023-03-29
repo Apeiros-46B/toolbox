@@ -1,0 +1,5 @@
+#!/bin/sh
+
+app="$(pw-cli ls Node | grep -F node.name | grep -Ev 'Dummy-Driver|Freewheel-Driver|Midi-Bridge|alsa_' | awk -F ' = ' '{ print $2 }' | tr -d '"' | fzf --height=32%)"
+[ ! "$app" ] && exit 1
+echo "$app" | virtmic
