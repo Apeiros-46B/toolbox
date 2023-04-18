@@ -74,8 +74,8 @@ formal=false # formal mode?
 # opts
 names=''                                  # last names (applicable only for formal mode)
 linkcolor='linkblue'                      # link color
-preamble="$HOME/org/.util/preamble.tex"   # path to a LaTeX preamble
-filter="$HOME/org/.util/pagebreak.lua"    # path to a pandoc Lua filter
+preamble="$HOME/norg/.util/preamble.tex"   # path to a LaTeX preamble
+filter="$HOME/norg/.util/pagebreak.lua"    # path to a pandoc Lua filter
 to='pdf'                                  # output format
 
 # loop through remaining args
@@ -100,7 +100,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-$formal && preamble="$HOME/org/.util/mla_preamble.tex"
+$formal && preamble="$HOME/norg/.util/mla_preamble.tex"
 # }}}
 
 # {{{ convert to latex first if target is pdf
