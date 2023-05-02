@@ -46,7 +46,7 @@ pretty_files="$(echo "$sorted_files" | sed "s/^[0-9]*\\.[0-9]* $escaped//")"
 files_excluded="$(echo "$pretty_files" | grep -Ev -e "$exclude_pattern")"
 
 # open fzf
-fzf_results="$(echo "$files_excluded" | fzf -m --tac --bind "ctrl-o:execute-silent($preview '$location'{})")"
+fzf_results="$(echo "$files_excluded" | fzf -m --tac --bind "ctrl-space:execute-silent($preview '$location'{}),alt-bs:execute-silent($preview '' kill)")"
 # exit early if cancelled
 [ ! "$fzf_results" ] && exit 0
 

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# shellcheck disable=SC2016
+out="$(st -e sh -c 'echo '"$$"' > /dev/null; fzf > "/proc/$(pgrep -f "^st -e sh -c echo '"$$"'")/fd/1"')"
+echo "$out"
