@@ -1,5 +1,9 @@
 #!/bin/sh
+# "replacement" for dmenu using a terminal emulator and fzf
+term='st'
 
-# shellcheck disable=SC2016
-out="$(st -e sh -c 'echo '"$$"' > /dev/null; fzf > "/proc/$(pgrep -f "^st -e sh -c echo '"$$"'")/fd/1"')"
-echo "$out"
+# read choices from stdin, escape single quotes
+choices="$(sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/")"
+
+# shellcheck disable=2016
+"$term" -e sh -c 'echo '"$$"' > /dev/null; echo '"$choices"' | fzf --margin=0,0,0,0 > "/proc/$(pgrep -f "^'"$term"' -e sh -c echo '"$$"'")/fd/1"'

@@ -2,6 +2,10 @@
 # ee - edit encrypted
 # wrapper around gpg to edit encrypted files with $EDITOR
 
+ed="$EE_EDITOR"
+[ ! "$ed" ] && ed="$EDITOR"
+[ ! "$ed" ] && ed="nvim"
+
 # {{{ handle input
 # get file info and a temporary file name
 [ ! "$1" ] && echo 'usage: ee <file>' && exit 1
@@ -33,7 +37,9 @@ fi
 # {{{ edit
 [ $file_is_enc -eq 0 ] && cp "$tmp" "$tmp.orig" # if it did get decrypted, copy tmp to another tmpfile for comparison
 
-$EDITOR "$tmp" # open editor
+# shellcheck disable=2086
+set -- $ed
+"$@" "$tmp" # open editor
 # }}}
 
 # {{{ encrypt

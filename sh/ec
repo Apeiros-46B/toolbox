@@ -1,0 +1,17 @@
+#!/bin/sh
+# minimize the current window, launch an emacs client, and unminimize when done
+
+# concat all args into a string
+args=''
+for a in "$@"; do
+	args="$args '$a'"
+done
+
+awesome-client '
+	local c = client.focus
+	c.minimized = true
+	require("awful").spawn.easy_async_with_shell(
+		[[cd "'"$PWD"'"; emacsclient -a "" -c '"$args"']],
+		function() c.minimized = false end
+	)
+'
