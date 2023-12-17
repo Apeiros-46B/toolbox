@@ -1,20 +1,4 @@
 #!/bin/sh
-# minimize the current window, launch an emacs client, and unminimize when done
+# wrapper around autominimize for emacsclient
 
-# concat all args into a list of single-quoted shell strings
-# (properly escapes quotations)
-concat() {
-	for i in "$@"; do
-		printf %s\\n "$i" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/' \\\\/"
-	done
-	echo
-}
-
-awesome-client '
-	local c = client.focus
-	c.minimized = true
-	require("awful").spawn.easy_async_with_shell(
-		[[cd "'"$PWD"'"; emacsclient -a "" -c '"$(concat "$@")"']],
-		function() c.minimized = false end
-	)
-'
+autominimize 'emacsclient -a "" -c' true "$@"

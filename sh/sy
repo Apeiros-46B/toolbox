@@ -1,0 +1,7 @@
+#!/bin/sh
+# wrapper around autominimize for sioyek
+
+# sioyek does not block if there is an existing instance
+# we do not want the window to instantly unminimize if sioyek is non-blocking
+unminimize="$(pgrep -x sioyek > /dev/null && echo 'false' || echo 'true')"
+autominimize 'sioyek --new-window' "$unminimize" "$@"
